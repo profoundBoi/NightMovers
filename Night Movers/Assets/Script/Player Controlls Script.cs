@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
-using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController3D : MonoBehaviour
+public class PlayerController3D : NetworkBehaviour
 {
     [SerializeField]
     private Vector3 moveInput;
