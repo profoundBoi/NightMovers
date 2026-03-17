@@ -113,7 +113,7 @@ public class PlayerController3D : NetworkBehaviour
     }
 
 
-    public override void OnNetworkDespawn()
+    public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
         
@@ -123,10 +123,13 @@ public class PlayerController3D : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             RunSpeed = speed * SpeedMultiplier;
         
-        base.OnNetworkDespawn();
 
     }
 
+    public override void OnNetworkDespawn()
+    {
+        if (!IsOwner) return;
+    }
     // MOVEMENT
     public void OnMove(InputAction.CallbackContext context)
     {
