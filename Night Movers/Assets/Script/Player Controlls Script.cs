@@ -115,14 +115,14 @@ public class PlayerController3D : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (!IsOwner)
-        {
+        if (!IsOwner) return;
+        
             playerinput = GetComponent<PlayerInput>();
             animator = GetComponent<Animator>();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.lockState = CursorLockMode.None;
             RunSpeed = speed * SpeedMultiplier;
-        }
+        
         base.OnNetworkDespawn();
 
     }
