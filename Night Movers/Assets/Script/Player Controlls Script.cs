@@ -112,21 +112,18 @@ public class PlayerController3D : NetworkBehaviour
         playerInput = GetComponent<PlayerInput>();
     }
 
-    void Start()
+
+    public override void OnNetworkDespawn()
     {
-        animator = GetComponent<Animator>();
-        rb.freezeRotation = true;
-        Cursor.lockState = CursorLockMode.Locked;
-        playerInput.defaultActionMap = "UI";
-        Cursor.lockState = CursorLockMode.None;
-
-        RunSpeed = speed * SpeedMultiplier;
-        // PausePanel.SetActive(false);
-
-        SetSpawnPoint();
-        playerinput = GetComponent<PlayerInput>();
-
-       
+        if (!IsOwner)
+        {
+            playerinput = GetComponent<PlayerInput>();
+            animator = GetComponent<Animator>();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.None;
+            RunSpeed = speed * SpeedMultiplier;
+        }
+        base.OnNetworkDespawn();
 
     }
 
