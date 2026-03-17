@@ -54,7 +54,6 @@ public class PlayerController3D : MonoBehaviour
     private Transform HoldingPosition;
     [SerializeField]
     private int AimDistance;
-    private ShootManager ShootScript;
     private bool isShooting;
 
     //Sniper UI
@@ -84,10 +83,8 @@ public class PlayerController3D : MonoBehaviour
 
     //Player Outline
     [Header("Enemy Stats")]
-    public Outline OtherPlayersOutline;
     public GameObject OtherPlayer;
     private PlayerController3D otherPlayersScript;
-    public Outline myOutline;
 
     //Slide Stats
     [Header("Slide Stats")]
@@ -101,7 +98,6 @@ public class PlayerController3D : MonoBehaviour
     [SerializeField] private AudioClip shootSound;
 
     //Seagull Settings
-    [SerializeField] private SeagulScript seagullScript;
     private PlayerInput playerinput;
 
 
@@ -126,7 +122,6 @@ public class PlayerController3D : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         RunSpeed = speed * SpeedMultiplier;
-        ShootScript = GetComponent<ShootManager>();
         // PausePanel.SetActive(false);
 
         SetSpawnPoint();
@@ -234,16 +229,11 @@ public class PlayerController3D : MonoBehaviour
     {
         if (context.performed)
         {
-            ShootScript.isRunning = true;
-            ShootScript.isShooting = true;
             isShooting = true;
-            ShootScript.OnShoot();
 
         }
         else if (context.canceled)
         {
-            ShootScript.isRunning = false;
-            ShootScript.isShooting = false;
             isShooting = false;
         }
     }
@@ -295,12 +285,10 @@ public class PlayerController3D : MonoBehaviour
         isSliding = true;
         if (playerinput.playerIndex == 0)
         {
-            seagullScript.canAttckPlayer[0] = false;
 
         }
         else
         {
-            seagullScript.canAttckPlayer[1] = false;
 
         }
         rb.AddForce(transform.forward * forceAmount, ForceMode.Force);
@@ -324,17 +312,14 @@ public class PlayerController3D : MonoBehaviour
                 if (OtherPlayer != null)
                 {
                     otherPlayersScript = OtherPlayer.GetComponent<PlayerController3D>();
-                    otherPlayersScript.myOutline.OutlineWidth = 10;
                 }
                 else if (OtherPlayer == null)
                 {
-                    OtherPlayersOutline.OutlineWidth = 10;
                 }
             }
             else
             {
                 otherPlayersScript = OtherPlayer.GetComponent<PlayerController3D>();
-                otherPlayersScript.myOutline.OutlineWidth = 0;
                 otherPlayersScript = null;
                 OtherPlayer = null;
             }
