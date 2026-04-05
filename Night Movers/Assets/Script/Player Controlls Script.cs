@@ -23,16 +23,13 @@ public class PlayerController3D : NetworkBehaviour
     public float jumpForce = 5f;
     public float SpeedMultiplier;
     private float RunSpeed;
+
     [Header("Look")]
     public float lookSensitivity = 120f;
-    [SerializeField]
-    private Transform CameraHolder;
     [SerializeField]
     private Transform PlayerCamera;
     public float minLookX = -60f;
     public float maxLookX = 60f;
-    [SerializeField]
-    private Camera playerCam;
     private float xRotation;
     [SerializeField]
     private float maxDistance, minDistance;
@@ -40,8 +37,12 @@ public class PlayerController3D : NetworkBehaviour
     //Interactions
     private GameObject InteractableObject;
     public LayerMask Interact;
-
-
+    [SerializeField]
+    private int Interactrange;
+    private GameObject CurrentInteractableObject;
+    public Transform HoldPosition;
+    [SerializeField]
+    private GameObject heldObject;
     //Attack
     [SerializeField]
     private bool isChargingWeapon;
@@ -49,8 +50,6 @@ public class PlayerController3D : NetworkBehaviour
     private float attackPower;
     [SerializeField]
     private GameObject heldWeapon;
-    [SerializeField]
-    private Transform HoldingPosition;
     [SerializeField]
     private int AimDistance;
     private bool isShooting;
@@ -206,7 +205,7 @@ public class PlayerController3D : NetworkBehaviour
         if (context.performed && IsGrounded())
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-            PlayJump();
+           // PlayJump();
         }
     }
 
@@ -237,90 +236,53 @@ public class PlayerController3D : NetworkBehaviour
         }
     }
 
-    public void OnScope(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            playerCam.fieldOfView = 10;
-            lookSensitivity = 40;
-            SniperScopeUi.SetActive(true);
-        }
-        else if (context.canceled)
-        {
-            playerCam.fieldOfView = 60;
-            lookSensitivity = 120;
-            SniperScopeUi.SetActive(false);
-
-        }
-    }
+   
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.canceled)
+        if (context.performed)
         {
             Ray ray = new Ray(PlayerCamera.position, PlayerCamera.forward);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 5f, Interact))
+            if (Physics.Raycast(ray, out hit, Interactrange, Interact))
             {
-
+                heldObject = hit.collider.gameObject;
+                Rigidbody rigidBody = heldObject.GetComponent<Rigidbody>();
+                Destroy(rigidBody);
+                heldObject.transform.position = HoldPosition.position;
+                heldObject.transform.parent = HoldPosition;
             }
         }
-    }
-
-    public void OnSlide(InputAction.CallbackContext context)
-    {
-        if (isRunning)
+        else if (context.canceled)
         {
-            if (context.canceled)
-            {
-                StartCoroutine(SlideAnimation());
-            }
+            heldObject.AddComponent<Rigidbody>();
+            heldObject.transform.parent = null;
+            heldObject = null;
         }
     }
 
-    IEnumerator SlideAnimation()
-    {
-        isSliding = true;
-        if (playerinput.playerIndex == 0)
-        {
-
-        }
-        else
-        {
-
-        }
-        rb.AddForce(transform.forward * forceAmount, ForceMode.Force);
-        yield return new WaitForSeconds(forceDuration);
-       
-        isSliding = false;
-
-    }
-
-
-    private void checkForOtherPlayer()
+    private void checkForInteraction()
     {
         Ray ray = new Ray(PlayerCamera.position, PlayerCamera.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 1000f))
+        if (Physics.Raycast(ray, out hit, Interactrange, Interact))
         {
-            if (hit.collider.CompareTag("Player1") || hit.collider.CompareTag("Player2"))
+            if (hit.collider != null)
             {
-                OtherPlayer = hit.collider.gameObject;
-                if (OtherPlayer != null)
-                {
-                    otherPlayersScript = OtherPlayer.GetComponent<PlayerController3D>();
-                }
-                else if (OtherPlayer == null)
-                {
-                }
+                Debug.Log(hit.collider.gameObject.name);
+                CurrentInteractableObject = hit.collider.gameObject;
+                CurrentInteractableObject.AddComponent<Outline>();
             }
-            else
+        }
+        else 
+        {
+            if (CurrentInteractableObject != null)
             {
-                otherPlayersScript = OtherPlayer.GetComponent<PlayerController3D>();
-                otherPlayersScript = null;
-                OtherPlayer = null;
+                Outline outline = CurrentInteractableObject.GetComponent<Outline>();
+                Destroy(outline);
+                CurrentInteractableObject = null;
             }
         }
     }
@@ -335,7 +297,7 @@ public class PlayerController3D : NetworkBehaviour
         Vector3 targetVelocity = moveDirection * speed;
         targetVelocity.y = rb.linearVelocity.y; // Preserve vertical velocity for jumping/gravity
         rb.linearVelocity = targetVelocity;
-
+        checkForInteraction();
     }
 
     void LateUpdate()
@@ -349,7 +311,7 @@ public class PlayerController3D : NetworkBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, minLookX, maxLookX);
 
-        CameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        PlayerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
 
         float pitch = xRotation;
@@ -369,31 +331,16 @@ public class PlayerController3D : NetworkBehaviour
             {
                 if (speed == RunSpeed)
                 {
-                    if (isSliding)
-                    {
-                        PlaySlide();
-                    }
-                    else if (!isSliding)
-                    {
-                        PlayRun();
-                    }
+                    //PlayRun();
                 }
                 else if (speed != RunSpeed)
                 {
-
-                    if (!isShooting)
-                    {
-                        PlayWalk();
-                    }
-                    else if (isShooting)
-                    {
-                        PlayWalkAndShoot();
-                    }
+                   // PlayWalk();
                 }
             }
             else if (!IsGrounded())
             {
-                PlayJump();
+               // PlayJump();
 
             }
         }
@@ -401,20 +348,11 @@ public class PlayerController3D : NetworkBehaviour
         {
             if (IsGrounded())
             {
-
-                if (!isShooting)
-                {
-                    PlayIdle();
-                }
-                else if (isShooting)
-                {
-                    playShoot();
-                }
+                //PlayIdle();
             }
             else if (!IsGrounded())
             {
-                PlayJump();
-
+                //PlayJump();
             }
         }
 
@@ -440,15 +378,6 @@ public class PlayerController3D : NetworkBehaviour
         playerAnimations.SetBool(AnimationBools[0], true);
     }
 
-    void PlaySlide()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-        {
-            playerAnimations.SetBool(AnimationBools[i], false);
-        }
-        playerAnimations.SetBool(AnimationBools[4], true);
-    }
-
     void PlayRun()
     {
         for (int i = 0; i < AnimationBools.Count; i++)
@@ -458,23 +387,8 @@ public class PlayerController3D : NetworkBehaviour
         playerAnimations.SetBool(AnimationBools[1], true);
     }
 
-    void playShoot()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-        {
-            playerAnimations.SetBool(AnimationBools[i], false);
-        }
-        playerAnimations.SetBool(AnimationBools[3], true);
-    }
 
-    void PlayWalkAndShoot()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-        {
-            playerAnimations.SetBool(AnimationBools[i], false);
-        }
-        playerAnimations.SetBool(AnimationBools[5], true);
-    }
+
 
 
     void PlayIdle()
@@ -489,30 +403,5 @@ public class PlayerController3D : NetworkBehaviour
         return Physics.Raycast(transform.position, Vector3.down, 1.1f);
     }
 
-    void SetSpawnPoint()
-    {
-        string spawnTag = "";
-
-        if (playerInput.playerIndex == 0)
-        {
-            spawnTag = "P1Spawn";
-        }
-        else if (playerInput.playerIndex == 1)
-        {
-            spawnTag = "P2Spawn";
-        }
-
-        GameObject spawnPoint = GameObject.FindGameObjectWithTag(spawnTag);
-
-        if (spawnPoint != null)
-        {
-            transform.position = spawnPoint.transform.position;
-            transform.rotation = spawnPoint.transform.rotation;
-        }
-        else
-        {
-            Debug.LogWarning("Spawn point not found for tag: " + spawnTag);
-        }
-    }
 
 }
