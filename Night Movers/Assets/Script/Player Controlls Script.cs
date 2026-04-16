@@ -79,6 +79,7 @@ public class PlayerController3D : NetworkBehaviour
     private bool isJumping;
     [SerializeField]
     private List<string> AnimationBools;
+    [SerializeField] private string speedParam = "Speed";
 
     //Player Outline
     [Header("Enemy Stats")]
@@ -115,6 +116,7 @@ public class PlayerController3D : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+      
         if (!IsOwner) return;
         
             playerinput = GetComponent<PlayerInput>();
@@ -125,6 +127,8 @@ public class PlayerController3D : NetworkBehaviour
         
 
     }
+
+   
 
     public override void OnNetworkDespawn()
     {
