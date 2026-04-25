@@ -16,10 +16,12 @@ public class ExplodingEnemy : NetworkBehaviour
     public float explosionDelay = 1f;
     public float explosionRadius = 3f;
     public int damage = 50;
+    public GameObject explosionEffect;
 
     private Transform target;
     private NavMeshAgent agent;
     private bool isExploding = false;
+
 
     public override void OnNetworkSpawn()
     {
@@ -97,36 +99,51 @@ public class ExplodingEnemy : NetworkBehaviour
             agent.ResetPath();
         }
 
-        TriggerExplosionClientRpc();
+     
+        Vector3 explosionPos = transform.position;
+
+        HideEnemyClientRpc();
+
+        yield return new WaitForSeconds(0.05f);
+
+        TriggerExplosionClientRpc(explosionPos);
 
         yield return new WaitForSeconds(explosionDelay);
-
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            if (client.PlayerObject == null) continue;
-
-            float dist = Vector3.Distance(
-                transform.position,
-                client.PlayerObject.transform.position
-            );
-
-            if (dist <= explosionRadius)
-            {
-                //var health = client.PlayerObject.GetComponent<PlayerHealth>();
-                //if (health != null)
-                //{
-               //     health.TakeDamage(damage);
-               // }
-            }
-        }
 
         GetComponent<NetworkObject>().Despawn();
     }
 
     [ClientRpc]
-    void TriggerExplosionClientRpc()
+    void HideEnemyClientRpc()
     {
-        Debug.Log("BOOM!");
-;
+        foreach (var r in GetComponentsInChildren<Renderer>())
+        {
+            r.enabled = false;
+        }
+
+        var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.enabled = false;
+        }
+    }
+
+    [ClientRpc]
+    void TriggerExplosionClientRpc(Vector3 position)
+    {
+        if (explosionEffect != null)
+        {
+            GameObject fx = Instantiate(
+                explosionEffect,
+                position,
+                Quaternion.identity
+            );
+
+            Destroy(fx, 3f);
+        }
+        else
+        {
+            Debug.LogWarning("Explosion effect not assigned!");
+        }
     }
 }
