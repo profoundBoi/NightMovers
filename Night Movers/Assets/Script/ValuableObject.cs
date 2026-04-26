@@ -20,6 +20,7 @@ public class ValuableObject : NetworkBehaviour
     public GameObject breakEffect;
 
     private bool isBroken = false;
+    private int lastValue;
 
     public override void OnNetworkSpawn()
     {
@@ -27,6 +28,10 @@ public class ValuableObject : NetworkBehaviour
         {
             currentValue.Value = maxValue;
             durability.Value = maxDurability;
+
+            lastValue = maxValue;
+
+            MoneyManager.Instance.AddMoney(maxValue);
         }
     }
 
@@ -47,8 +52,19 @@ public class ValuableObject : NetworkBehaviour
     {
         durability.Value -= amount;
 
-        float durabilityPercent = Mathf.Clamp01(durability.Value / maxDurability);
-        currentValue.Value = Mathf.RoundToInt(maxValue * durabilityPercent);
+        float percent = Mathf.Clamp01(durability.Value / maxDurability);
+        int newValue = Mathf.RoundToInt(maxValue * percent);
+
+        currentValue.Value = newValue;
+
+        int difference = lastValue - newValue;
+
+        if (difference > 0)
+        {
+            MoneyManager.Instance.RemoveMoney(difference);
+        }
+
+        lastValue = newValue;
 
         if (durability.Value <= 0)
         {
@@ -60,8 +76,13 @@ public class ValuableObject : NetworkBehaviour
     {
         isBroken = true;
 
-        Vector3 pos = transform.position;
+        // Remove remaining value
+        if (lastValue > 0)
+        {
+            MoneyManager.Instance.RemoveMoney(lastValue);
+        }
 
+        Vector3 pos = transform.position;
         BreakClientRpc(pos);
 
         GetComponent<NetworkObject>().Despawn();
