@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.59, y: 0.15, z: 5.91}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.5061, y: 2.5061, z: 2.5061}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -157,11 +157,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExplodingEnemy
   ShowTopMostFoldoutHeaderGroup: 1
   detectionRange: 20
-  explodeRange: 2
+  explodeRange: 5
   explosionDelay: 1
   explosionRadius: 3
   damage: 50
-  explosionEffect: {fileID: 0}
+  explosionEffect: {fileID: 173935689961088446, guid: dc1ce65cd29908e428b75af4a870524f, type: 3}
 --- !u!195 &2619967216830722899
 NavMeshAgent:
   m_ObjectHideFlags: 0
