@@ -15,13 +15,14 @@ public class MoneyManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
+        if (!IsServer) return;
+
+        if (totalMoney.Value == 0)
         {
             totalMoney.Value = 0;
         }
     }
 
-    // Called when value changes
     public void AddMoney(int amount)
     {
         if (!IsServer) return;
@@ -35,5 +36,19 @@ public class MoneyManager : NetworkBehaviour
 
         totalMoney.Value -= amount;
         totalMoney.Value = Mathf.Max(0, totalMoney.Value);
+    }
+
+    public void RecalculateTotal()
+    {
+        if (!IsServer) return;
+
+        int total = 0;
+
+        foreach (var obj in FindObjectsOfType<ValuableObject>())
+        {
+            total += obj.GetValue();
+        }
+
+        totalMoney.Value = total;
     }
 }
