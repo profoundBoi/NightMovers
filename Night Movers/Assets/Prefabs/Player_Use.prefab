@@ -403,8 +403,8 @@ GameObject:
   - component: {fileID: 5679795278165071365}
   - component: {fileID: 7384126269350806190}
   - component: {fileID: 5097425718084144898}
-  - component: {fileID: 4645456137603174252}
   - component: {fileID: 2166732431244997897}
+  - component: {fileID: 240078891753631308}
   m_Layer: 0
   m_Name: Player_Use
   m_TagString: Untagged
@@ -443,7 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4039033324
+  GlobalObjectIdHash: 3226901904
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -529,7 +529,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4645456137603174252}
+      - m_Target: {fileID: 240078891753631308}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -545,7 +545,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4645456137603174252}
+      - m_Target: {fileID: 240078891753631308}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnLook
         m_Mode: 0
@@ -561,7 +561,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Look[/Mouse/delta,/Pen/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4645456137603174252}
+      - m_Target: {fileID: 240078891753631308}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnInteract
         m_Mode: 0
@@ -623,6 +623,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
+    m_ActionName: 'Player/Attack[/Mouse/leftButton,/Keyboard/enter]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 27c5f898-bc57-4ee1-8800-db469aca5fe3
+    m_ActionName: 'Player/Crouch[/Keyboard/c]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2776c80d-3c14-4091-8c56-d04ced07a2b0
+    m_ActionName: 'Player/Previous[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba
+    m_ActionName: 'Player/Next[/Keyboard/2]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Gamepad
   m_DefaultActionMap: Player
@@ -655,71 +671,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &4645456137603174252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7094950043068050778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d1dfe3686ce60e4f95e7a64816d8bbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController3D
-  ShowTopMostFoldoutHeaderGroup: 1
-  moveInput: {x: 0, y: 0, z: 0}
-  speed: 5
-  jumpForce: 5
-  SpeedMultiplier: 2
-  lookSensitivity: 120
-  PlayerCamera: {fileID: 7939605792612254305}
-  minLookX: -60
-  maxLookX: 60
-  maxDistance: 1.42
-  minDistance: 2.74
-  Interact:
-    serializedVersion: 2
-    m_Bits: 8
-  Interactrange: 500
-  HoldPosition: {fileID: 6242682640192966561}
-  MidlePoint: {fileID: 6776283628575977526}
-  heldObject: {fileID: 0}
-  MedianPoint: {fileID: 0}
-  isChargingWeapon: 0
-  attackPower: 0
-  heldWeapon: {fileID: 0}
-  AimDistance: 0
-  SniperScopeUi: {fileID: 0}
-  PausePanel: {fileID: 0}
-  PauseCanvas: {fileID: 0}
-  InventoryCanvas: {fileID: 0}
-  InventoryPanel: {fileID: 0}
-  eventSystem: {fileID: 0}
-  PauseFirstSelect: {fileID: 0}
-  InventoryFirstSelect: {fileID: 0}
-  playerAnimations: {fileID: 0}
-  AnimationBools:
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  OtherPlayer: {fileID: 0}
-  forceAmount: 20
-  forceDuration: 1
-  audioSource: {fileID: 0}
-  shootSound: {fileID: 0}
-  PlayerMiniMap: {fileID: 0}
-  OpenMapCamera: {fileID: 0}
-  OpenMap: {x: 0, y: 0, z: 0}
-  ClosedMap: {x: 0, y: 0, z: 0}
-  OpenMapPosition: {x: 0, y: 0, z: 0}
-  ClosedMapPosition: {x: 0, y: 0, z: 0}
-  OpenMapCameraPosition: {x: 0, y: 0, z: 0}
-  ClosedMapCameraPosition: {x: 0, y: 0, z: 0}
-  ObjectScript: {fileID: 0}
 --- !u!136 &2166732431244997897
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -743,6 +694,65 @@ CapsuleCollider:
   m_Height: 7.4366
   m_Direction: 1
   m_Center: {x: 0.06820655, y: -3.35, z: 0}
+--- !u!114 &240078891753631308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094950043068050778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5ef7bef3bab0be42950ce6d699cf54c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController3D
+  ShowTopMostFoldoutHeaderGroup: 1
+  moveInput: {x: 0, y: 0, z: 0}
+  speed: 5
+  jumpForce: 5
+  SpeedMultiplier: 0
+  lookSensitivity: 120
+  PlayerCamera: {fileID: 7939605792612254305}
+  minLookX: -60
+  maxLookX: 60
+  maxDistance: 0
+  minDistance: 0
+  Interact:
+    serializedVersion: 2
+    m_Bits: 8
+  Interactrange: 0
+  HoldPosition: {fileID: 6242682640192966561}
+  MidlePoint: {fileID: 0}
+  heldObject: {fileID: 0}
+  MedianPoint: {fileID: 0}
+  isChargingWeapon: 0
+  attackPower: 0
+  heldWeapon: {fileID: 0}
+  AimDistance: 0
+  SniperScopeUi: {fileID: 0}
+  PausePanel: {fileID: 0}
+  PauseCanvas: {fileID: 0}
+  InventoryCanvas: {fileID: 0}
+  InventoryPanel: {fileID: 0}
+  eventSystem: {fileID: 0}
+  PauseFirstSelect: {fileID: 0}
+  InventoryFirstSelect: {fileID: 0}
+  playerAnimations: {fileID: 0}
+  AnimationBools: []
+  OtherPlayer: {fileID: 0}
+  forceAmount: 20
+  forceDuration: 1
+  audioSource: {fileID: 0}
+  shootSound: {fileID: 0}
+  PlayerMiniMap: {fileID: 0}
+  OpenMapCamera: {fileID: 0}
+  OpenMap: {x: 0, y: 0, z: 0}
+  ClosedMap: {x: 0, y: 0, z: 0}
+  OpenMapPosition: {x: 0, y: 0, z: 0}
+  ClosedMapPosition: {x: 0, y: 0, z: 0}
+  OpenMapCameraPosition: {x: 0, y: 0, z: 0}
+  ClosedMapCameraPosition: {x: 0, y: 0, z: 0}
+  ObjectScript: {fileID: 0}
 --- !u!1 &8650505996627970130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1626,6 +1636,10 @@ PrefabInstance:
       propertyPath: heightOffset
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3508623584338759971, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 240078891753631308}
     - target: {fileID: 4186576985700764009, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
       propertyPath: m_Name
       value: Particle Tester
@@ -1736,11 +1750,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!4 &6776283628575977526 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2430609398961674115, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
-  m_PrefabInstance: {fileID: 9201259002699638709}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7789515792699711270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1416552540437198995, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
