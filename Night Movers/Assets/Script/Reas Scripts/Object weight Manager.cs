@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -27,7 +27,6 @@ public class ObjectweightManager : NetworkBehaviour
 
                 if (medianPointObject == null)
                 {
-                    // Create at median position first, then parent the heavy object to it
                     medianPointObject = new GameObject("MedianHoldPoint");
                     medianPointObject.transform.position = medianPoint;
 
@@ -37,10 +36,11 @@ public class ObjectweightManager : NetworkBehaviour
                     NetworkObject thisNetObj = GetComponent<NetworkObject>();
                     if (thisNetObj != null)
                         thisNetObj.TrySetParent(medianPointObject.transform, worldPositionStays: true);
+
+                    SetKinematic(true); // 👈 disable physics when held
                 }
                 else
                 {
-                    // Only update position if hold positions actually changed
                     medianPointObject.transform.position = medianPoint;
                 }
             }
@@ -55,8 +55,17 @@ public class ObjectweightManager : NetworkBehaviour
                     medianNetObj.Despawn(true);
 
                 medianPointObject = null;
+                SetKinematic(false); // 👈 re-enable physics when released
             }
         }
+    }
+
+    private void SetKinematic(bool isKinematic)
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb == null) return;
+        rb.isKinematic = isKinematic;
+        rb.useGravity = !isKinematic;
     }
 
     [ServerRpc(RequireOwnership = false)]
