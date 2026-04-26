@@ -443,7 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3866740100
+  GlobalObjectIdHash: 3226901904
   InScenePlacedSourceGlobalObjectIdHash: 3226901904
   DeferredDespawnTick: 0
   Ownership: 1
@@ -720,9 +720,9 @@ MonoBehaviour:
   Interact:
     serializedVersion: 2
     m_Bits: 8
-  Interactrange: 0
+  Interactrange: 500
   HoldPosition: {fileID: 6242682640192966561}
-  MidlePoint: {fileID: 0}
+  MidlePoint: {fileID: 6776283628575977526}
   heldObject: {fileID: 0}
   MedianPoint: {fileID: 0}
   isChargingWeapon: 0
@@ -1750,6 +1750,11 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!4 &6776283628575977526 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2430609398961674115, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
+  m_PrefabInstance: {fileID: 9201259002699638709}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7789515792699711270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1416552540437198995, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
