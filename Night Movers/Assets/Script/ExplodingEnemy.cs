@@ -10,47 +10,37 @@ public class ExplodingEnemy : NetworkBehaviour
 {
     [Header("Movement")]
     public float detectionRange = 20f;
-    public float explodeRange = 2f;
+    public float explodeRange = 2.5f;
 
     [Header("Explosion")]
     public float explosionDelay = 1f;
     public float explosionRadius = 3f;
     public int damage = 50;
+    public LayerMask damageLayer;
     public GameObject explosionEffect;
 
     private Transform target;
     private NavMeshAgent agent;
     private bool isExploding = false;
 
-
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
 
         agent = GetComponent<NavMeshAgent>();
-
-        if (agent == null)
-        {
-            Debug.LogError("NavMeshAgent missing on ExplodingEnemy!");
-            return;
-        }
-
-        agent.stoppingDistance = explodeRange * 0.8f;
-        agent.updateRotation = true;
+        agent.stoppingDistance = explodeRange * 0.9f;
     }
-
 
     void Update()
     {
         if (!IsServer || isExploding) return;
 
         FindClosestPlayer();
-
         if (target == null) return;
 
         float distance = Vector3.Distance(transform.position, target.position);
 
-        if (distance <= explodeRange && !isExploding)
+        if (distance <= explodeRange)
         {
             StartCoroutine(Explode());
         }
@@ -60,7 +50,6 @@ public class ExplodingEnemy : NetworkBehaviour
         }
         else
         {
-   
             if (agent.hasPath)
                 agent.ResetPath();
         }
@@ -75,14 +64,15 @@ public class ExplodingEnemy : NetworkBehaviour
         {
             if (client.PlayerObject == null) continue;
 
-            Transform playerTransform = client.PlayerObject.transform;
+            Collider col = client.PlayerObject.GetComponentInChildren<Collider>();
+            if (col == null) continue;
 
-            float dist = Vector3.Distance(transform.position, playerTransform.position);
+            float dist = Vector3.Distance(transform.position, col.transform.position);
 
             if (dist < closestDist)
             {
                 closestDist = dist;
-                closest = playerTransform;
+                closest = col.transform;
             }
         }
 
@@ -93,13 +83,9 @@ public class ExplodingEnemy : NetworkBehaviour
     {
         isExploding = true;
 
-        if (agent != null)
-        {
-            agent.isStopped = true;
-            agent.ResetPath();
-        }
+        agent.isStopped = true;
+        agent.ResetPath();
 
-     
         Vector3 explosionPos = transform.position;
 
         HideEnemyClientRpc();
@@ -108,9 +94,26 @@ public class ExplodingEnemy : NetworkBehaviour
 
         TriggerExplosionClientRpc(explosionPos);
 
+        DealDamage(explosionPos);
+
         yield return new WaitForSeconds(explosionDelay);
 
         GetComponent<NetworkObject>().Despawn();
+    }
+
+    void DealDamage(Vector3 center)
+    {
+        Collider[] hits = Physics.OverlapSphere(center, explosionRadius, damageLayer);
+
+        foreach (Collider hit in hits)
+        {
+            // Try any health script
+          //  var health = hit.GetComponentInParent<IDamageable>();
+          //  if (health != null)
+//{
+          //      health.TakeDamage(damage);
+///}
+        }
     }
 
     [ClientRpc]
@@ -121,11 +124,8 @@ public class ExplodingEnemy : NetworkBehaviour
             r.enabled = false;
         }
 
-        var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent != null)
-        {
             agent.enabled = false;
-        }
     }
 
     [ClientRpc]
@@ -133,17 +133,8 @@ public class ExplodingEnemy : NetworkBehaviour
     {
         if (explosionEffect != null)
         {
-            GameObject fx = Instantiate(
-                explosionEffect,
-                position,
-                Quaternion.identity
-            );
-
+            GameObject fx = Instantiate(explosionEffect, position, Quaternion.identity);
             Destroy(fx, 3f);
-        }
-        else
-        {
-            Debug.LogWarning("Explosion effect not assigned!");
         }
     }
 }
