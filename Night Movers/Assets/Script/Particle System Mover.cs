@@ -8,6 +8,7 @@ public class BezierPathLine : NetworkBehaviour
     public Transform point1;
     public Transform point2;
     public Transform point3;
+    public Transform medianPoint;
 
     [Header("Offset")]
     public float heightOffset = 5f;

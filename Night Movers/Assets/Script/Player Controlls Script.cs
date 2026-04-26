@@ -23,7 +23,7 @@ public class PlayerController3D : NetworkBehaviour
     public float speed = 5f;
     public float jumpForce = 5f;
     public float SpeedMultiplier;
-    private float baseSpeed;      // FIX: store the original speed so run/stop is reliable
+    private float baseSpeed;
     private float RunSpeed;
 
     [Header("Look")]
@@ -46,16 +46,13 @@ public class PlayerController3D : NetworkBehaviour
     public Transform MidlePoint;
     [SerializeField]
     private GameObject heldObject;
+    private ObjectweightManager currentHeavyObject;
 
     // Attack
-    [SerializeField]
-    private bool isChargingWeapon;
-    [SerializeField]
-    private float attackPower;
-    [SerializeField]
-    private GameObject heldWeapon;
-    [SerializeField]
-    private int AimDistance;
+    [SerializeField] private bool isChargingWeapon;
+    [SerializeField] private float attackPower;
+    [SerializeField] private GameObject heldWeapon;
+    [SerializeField] private int AimDistance;
     private bool isShooting;
 
     // Sniper UI
@@ -67,22 +64,19 @@ public class PlayerController3D : NetworkBehaviour
     [SerializeField] private Canvas PauseCanvas, InventoryCanvas;
     [SerializeField] private GameObject InventoryPanel;
 
-    // Player Assortment Manager
+    // Player Input Manager
     private PlayerInputManager playerInputManager;
     private GameObject playerInputmNagerHolder;
-    [SerializeField]
-    private MultiplayerEventSystem eventSystem;
+    [SerializeField] private MultiplayerEventSystem eventSystem;
     [SerializeField] private GameObject PauseFirstSelect, InventoryFirstSelect;
 
     // Player Animations
     [Header("Animations")]
-    [SerializeField]
-    private Animator playerAnimations;
+    [SerializeField] private Animator playerAnimations;
     private bool isJumping;
-    [SerializeField]
-    private List<string> AnimationBools;
+    [SerializeField] private List<string> AnimationBools;
 
-    // Player Outline
+    // Enemy Stats
     [Header("Enemy Stats")]
     public GameObject OtherPlayer;
     private PlayerController3D otherPlayersScript;
@@ -98,7 +92,6 @@ public class PlayerController3D : NetworkBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip shootSound;
 
-    // Seagull Settings
     private PlayerInput playerinput;
 
     [Header("Map Settings")]
@@ -119,10 +112,8 @@ public class PlayerController3D : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // FIX: All setup guarded behind IsOwner — non-owners do nothing here
         if (!IsOwner)
         {
-            // Disable input and camera on non-owner instances so they don't interfere
             PlayerInput pi = GetComponent<PlayerInput>();
             if (pi != null) pi.enabled = false;
 
@@ -133,64 +124,83 @@ public class PlayerController3D : NetworkBehaviour
         playerinput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
 
-        // FIX: Only lock cursor once — the original set Locked then immediately overwrote with None
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
-        // FIX: Cache base speed before any multipliers are applied
         baseSpeed = speed;
         RunSpeed = speed * SpeedMultiplier;
+
+        Debug.Log($"[PlayerController3D] I own this player. OwnerClientId={OwnerClientId}, LocalClientId={NetworkManager.Singleton.LocalClientId}");
     }
 
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) return;
-
-        // FIX: Disable input component on despawn to prevent ghost inputs
         PlayerInput pi = GetComponent<PlayerInput>();
         if (pi != null) pi.enabled = false;
     }
 
-    // MOVEMENT
+    // ── INPUT CALLBACKS ────────────────────────────────────────────────────────
+
     public void OnMove(InputAction.CallbackContext context)
     {
-        // FIX: Guard all input callbacks — without this every client moves every player
         if (!IsOwner) return;
-
         Vector2 input = context.ReadValue<Vector2>();
         moveInput = new Vector3(input.x, 0f, input.y);
     }
 
-    // Map Settings
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        lookInput = context.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        if (context.performed && IsGrounded())
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+    }
+
+    public void OnRun(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        if (context.performed)
+        {
+            isRunning = true;
+            speed = RunSpeed;
+        }
+        else if (context.canceled)
+        {
+            isRunning = false;
+            speed = baseSpeed;
+        }
+    }
+
     public void OnMapOpen(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
-
         if (context.performed)
         {
             PlayerMiniMap.localScale = OpenMap;
-            RectTransform mapPosition = PlayerMiniMap.GetComponent<RectTransform>();
-            mapPosition.position = OpenMapPosition;
+            PlayerMiniMap.GetComponent<RectTransform>().position = OpenMapPosition;
             OpenMapCamera.localPosition = OpenMapCameraPosition;
         }
         else if (context.canceled)
         {
             PlayerMiniMap.localScale = ClosedMap;
-            RectTransform mapPosition = PlayerMiniMap.GetComponent<RectTransform>();
-            mapPosition.position = ClosedMapPosition;
+            PlayerMiniMap.GetComponent<RectTransform>().position = ClosedMapPosition;
             OpenMapCamera.localPosition = ClosedMapCameraPosition;
         }
     }
 
-    // Inventory System
     public void OnOpenInventorysystem(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
-
         if (InventoryPanel.activeSelf)
         {
             InventoryPanel.SetActive(false);
-            speed = baseSpeed; // FIX: restore to base speed, not a hardcoded 5
+            speed = baseSpeed;
         }
         else
         {
@@ -201,20 +211,9 @@ public class PlayerController3D : NetworkBehaviour
         }
     }
 
-    // LOOK
-    public void OnLook(InputAction.CallbackContext context)
-    {
-        // FIX: Guard — without this every client rotates every player's camera
-        if (!IsOwner) return;
-
-        lookInput = context.ReadValue<Vector2>();
-    }
-
-    // Pause/Play
     public void PauseandPlay(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
-
         if (PausePanel.activeSelf)
         {
             PausePanel.SetActive(false);
@@ -226,34 +225,6 @@ public class PlayerController3D : NetworkBehaviour
             Time.timeScale = 0f;
             eventSystem.playerRoot = PauseCanvas.gameObject;
             eventSystem.firstSelectedGameObject = PauseFirstSelect;
-        }
-    }
-
-    // JUMP
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (!IsOwner) return;
-
-        if (context.performed && IsGrounded())
-        {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-            // PlayJump();
-        }
-    }
-
-    public void OnRun(InputAction.CallbackContext context)
-    {
-        if (!IsOwner) return;
-
-        if (context.performed)
-        {
-            isRunning = true;
-            speed = RunSpeed; // FIX: set to cached RunSpeed instead of multiplying current speed (which compounds each press)
-        }
-        else if (context.canceled)
-        {
-            isRunning = false;
-            speed = baseSpeed; // FIX: restore to cached base speed instead of dividing (which could drift)
         }
     }
 
@@ -277,20 +248,31 @@ public class PlayerController3D : NetworkBehaviour
                     if (objScript != null && objScript.canBePickedUp && netObj != null)
                     {
                         heldObject = target;
-                        // Ask the server to reparent this NetworkObject under our HoldPosition
                         PickUpObjectServerRpc(netObj.NetworkObjectId);
+                    }
+                    else if (objScript != null && !objScript.canBePickedUp && netObj != null)
+                    {
+                        currentHeavyObject = objScript;
+                        objScript.AddHoldPositionServerRpc(NetworkObject.NetworkObjectId);
                     }
                 }
             }
         }
         else if (context.canceled)
         {
+            // Clear heavy object hold positions on release
+            if (currentHeavyObject != null)
+            {
+                currentHeavyObject.ClearHoldPositionsServerRpc();
+                currentHeavyObject = null;
+            }
+
+            // Drop held object if carrying one
             if (heldObject != null)
             {
                 NetworkObject netObj = heldObject.GetComponent<NetworkObject>();
                 if (netObj != null)
                 {
-                    // Ask the server to drop the object (unparent and restore physics)
                     DropObjectServerRpc(netObj.NetworkObjectId);
                 }
                 heldObject = null;
@@ -298,64 +280,113 @@ public class PlayerController3D : NetworkBehaviour
         }
     }
 
+    // ── SERVER RPCS ────────────────────────────────────────────────────────────
+
     [ServerRpc]
     private void PickUpObjectServerRpc(ulong networkObjectId)
     {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
-        {
-            // Make kinematic so physics doesn't fight the movement
-            Rigidbody objRb = netObj.GetComponent<Rigidbody>();
-            if (objRb != null)
-            {
-                objRb.isKinematic = true;
-                objRb.useGravity = false;
-            }
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
+            return;
 
-            // We do NOT call TrySetParent to HoldPosition — HoldPosition is a plain Transform
-            // child, not a NetworkObject. Netcode forbids parenting a NetworkObject under a
-            // non-NetworkObject parent. Instead we leave it unparented and follow HoldPosition
-            // every frame in FixedUpdate on all clients via the ClientRpc below.
-            SetHeldObjectClientRpc(networkObjectId);
-        }
-    }
+        // Destroy Rigidbody on pickup — re-added fresh on drop
+        Rigidbody objRb = netObj.GetComponent<Rigidbody>();
+        if (objRb != null) Destroy(objRb);
 
-    [ClientRpc]
-    private void SetHeldObjectClientRpc(ulong networkObjectId)
-    {
-        // Store the reference on every client so FixedUpdate can move it to HoldPosition
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
-        {
-            heldObject = netObj.gameObject;
-        }
+        SetHeldObjectClientRpc(networkObjectId);
     }
 
     [ServerRpc]
     private void DropObjectServerRpc(ulong networkObjectId)
     {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
-        {
-            // Re-enable physics on drop
-            Rigidbody objRb = netObj.GetComponent<Rigidbody>();
-            if (objRb != null)
-            {
-                objRb.isKinematic = false;
-                objRb.useGravity = true;
-            }
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
+            return;
 
-            // Clear the held reference on all clients
-            ClearHeldObjectClientRpc();
+        Rigidbody objRb = netObj.GetComponent<Rigidbody>();
+        if (objRb == null) objRb = netObj.gameObject.AddComponent<Rigidbody>();
+        objRb.isKinematic = false;
+        objRb.useGravity = true;
+
+        ObjectweightManager owm = netObj.GetComponent<ObjectweightManager>();
+        if (owm != null)
+        {
+            owm.ClearHoldPositionsClientRpc();
         }
+
+        ClearHeldObjectClientRpc();
+    }
+
+    // ── CLIENT RPCS ────────────────────────────────────────────────────────────
+
+    [ClientRpc]
+    private void SetHeldObjectClientRpc(ulong networkObjectId)
+    {
+        if (!IsOwner) return;
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
+            heldObject = netObj.gameObject;
     }
 
     [ClientRpc]
     private void ClearHeldObjectClientRpc()
     {
+        if (!IsOwner) return;
         heldObject = null;
     }
 
+    // ── PHYSICS UPDATE ─────────────────────────────────────────────────────────
+
+    void FixedUpdate()
+    {
+        if (!IsOwner) return;
+
+        Vector3 moveDirection = transform.TransformDirection(moveInput).normalized;
+        Vector3 targetVelocity = moveDirection * speed;
+        targetVelocity.y = rb.linearVelocity.y;
+        rb.linearVelocity = targetVelocity;
+
+        if (heldObject != null)
+        {
+            ObjectweightManager owm = heldObject.GetComponent<ObjectweightManager>();
+
+            // Only manually move if it's a normal object
+            // Heavy objects are parented to the median point and moved by ObjectweightManager
+            if (owm == null || owm.isNormalObject)
+            {
+                heldObject.transform.position = HoldPosition.position;
+                heldObject.transform.rotation = HoldPosition.rotation;
+            }
+        }
+
+        checkForInteraction();
+    }
+
+    // ── CAMERA & ANIMATIONS ────────────────────────────────────────────────────
+
+    void LateUpdate()
+    {
+        if (!IsOwner) return;
+
+        float mouseX = lookInput.x * lookSensitivity * Time.deltaTime;
+        transform.Rotate(Vector3.up * mouseX);
+
+        float mouseY = lookInput.y * lookSensitivity * Time.deltaTime;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, minLookX, maxLookX);
+        PlayerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        float t = Mathf.InverseLerp(minLookX, maxLookX, xRotation);
+        float distance = Mathf.Lerp(minDistance, maxDistance, t);
+        PlayerCamera.localPosition = new Vector3(0f, 0f, distance);
+
+        bool moving = moveInput.x != 0 || moveInput.z != 0;
+        bool grounded = IsGrounded();
+
+
+    }
+
+    // ── INTERACTION / OUTLINE ──────────────────────────────────────────────────
+
     private void checkForInteraction()
     {
-        // FIX: Only the owner should be raycasting and modifying outlines
         if (!IsOwner) return;
 
         Ray ray = new Ray(PlayerCamera.position, PlayerCamera.forward);
@@ -367,19 +398,16 @@ public class PlayerController3D : NetworkBehaviour
             {
                 GameObject hitObject = hit.collider.gameObject;
 
-                // FIX: Only update outline when the target actually changes — prevents AddComponent spam every frame
                 if (hitObject != CurrentInteractableObject)
                 {
-                    // Remove outline from previous object
                     if (CurrentInteractableObject != null)
                     {
-                        Outline oldOutline = CurrentInteractableObject.GetComponent<Outline>();
-                        if (oldOutline != null) Destroy(oldOutline);
+                        Outline old = CurrentInteractableObject.GetComponent<Outline>();
+                        if (old != null) Destroy(old);
                     }
 
                     CurrentInteractableObject = hitObject;
 
-                    // Add outline only if it doesn't already have one
                     if (CurrentInteractableObject.GetComponent<Outline>() == null)
                         CurrentInteractableObject.AddComponent<Outline>();
                 }
@@ -389,114 +417,16 @@ public class PlayerController3D : NetworkBehaviour
         {
             if (CurrentInteractableObject != null)
             {
-                Outline outline = CurrentInteractableObject.GetComponent<Outline>();
-                if (outline != null) Destroy(outline);
+                Outline old = CurrentInteractableObject.GetComponent<Outline>();
+                if (old != null) Destroy(old);
                 CurrentInteractableObject = null;
             }
         }
     }
 
-    void FixedUpdate()
-    {
-        // FIX: Non-owners must not have their physics driven by this client
-        if (!IsOwner) return;
 
-        Vector3 moveDirection = transform.TransformDirection(moveInput).normalized;
-        Vector3 targetVelocity = moveDirection * speed;
-        targetVelocity.y = rb.linearVelocity.y;
-        rb.linearVelocity = targetVelocity;
 
-        // Follow HoldPosition every frame while carrying an object.
-        // We can't parent a NetworkObject to a plain child Transform,
-        // so instead we continuously move it to match HoldPosition's world position.
-        if (heldObject != null)
-        {
-            heldObject.transform.position = HoldPosition.position;
-            heldObject.transform.rotation = HoldPosition.rotation;
-        }
 
-        checkForInteraction();
-    }
-
-    void LateUpdate()
-    {
-        // FIX: Non-owners must not have their camera/rotation driven by this client
-        if (!IsOwner) return;
-
-        // Horizontal rotation (player body)
-        float mouseX = lookInput.x * lookSensitivity * Time.deltaTime;
-        transform.Rotate(Vector3.up * mouseX);
-
-        // Vertical rotation (camera)
-        float mouseY = lookInput.y * lookSensitivity * Time.deltaTime;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, minLookX, maxLookX);
-
-        PlayerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-        float pitch = xRotation;
-        float t = Mathf.InverseLerp(minLookX, maxLookX, pitch);
-        float distance = Mathf.Lerp(minDistance, maxDistance, t);
-        PlayerCamera.localPosition = new Vector3(0f, 0f, distance);
-
-        // Animations
-        if (moveInput.x > 0 || moveInput.z > 0 || moveInput.x < 0 || moveInput.z < 0)
-        {
-            if (IsGrounded())
-            {
-                if (speed == RunSpeed)
-                {
-                    // PlayRun();
-                }
-                else
-                {
-                    // PlayWalk();
-                }
-            }
-            else
-            {
-                // PlayJump();
-            }
-        }
-        else if (moveInput.x == 0 && moveInput.z == 0)
-        {
-            if (IsGrounded())
-            {
-                // PlayIdle();
-            }
-            else
-            {
-                // PlayJump();
-            }
-        }
-    }
-
-    void PlayJump()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-            playerAnimations.SetBool(AnimationBools[i], false);
-        playerAnimations.SetBool(AnimationBools[2], true);
-    }
-
-    void PlayWalk()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-            playerAnimations.SetBool(AnimationBools[i], false);
-        playerAnimations.SetBool(AnimationBools[0], true);
-    }
-
-    void PlayRun()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-            playerAnimations.SetBool(AnimationBools[i], false);
-        playerAnimations.SetBool(AnimationBools[1], true);
-    }
-
-    void PlayIdle()
-    {
-        for (int i = 0; i < AnimationBools.Count; i++)
-            playerAnimations.SetBool(AnimationBools[i], false);
-    }
 
     bool IsGrounded()
     {
