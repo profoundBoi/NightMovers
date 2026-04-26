@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 240078891753631308}
   m_Layer: 0
   m_Name: Player_Use
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -420,7 +420,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7094950043068050778}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.004522972, y: 0.0013719628, z: -0.00026905147, w: 0.9999888}
+  m_LocalRotation: {x: 0.0045200153, y: 0.0013712092, z: -0.00026797058, w: 0.9999888}
   m_LocalPosition: {x: -0.29125977, y: 0.5248413, z: -2.2197068}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -443,8 +443,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3226901904
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3866740100
+  InScenePlacedSourceGlobalObjectIdHash: 3226901904
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Multiplayer.Center.NetcodeForGameObjectsExample::Unity.Multiplayer.Center.NetcodeForGameObjectsExample.ClientNetworkTransform
   ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 1
+  NetworkTransformExpanded: 0
   AutoOwnerAuthorityTickOffset: 1
   PositionInterpolationType: 0
   RotationInterpolationType: 0
