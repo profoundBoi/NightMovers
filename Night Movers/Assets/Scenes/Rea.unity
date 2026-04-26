@@ -719,7 +719,7 @@ Transform:
   m_GameObject: {fileID: 1221479619}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: -7.09, z: 5.11}
+  m_LocalPosition: {x: 0.5, y: -7.09, z: 16.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1065,7 +1065,7 @@ Transform:
   m_GameObject: {fileID: 1800151642}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: -7.09, z: -2.44}
+  m_LocalPosition: {x: -12.68, y: -7.09, z: -2.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1112,7 +1112,6 @@ MonoBehaviour:
   canBePickedUp: 0
   playerHoldingPosition:
   - {fileID: 1221479623}
-  - {fileID: 1800151650}
 --- !u!114 &2037461768
 MonoBehaviour:
   m_ObjectHideFlags: 0

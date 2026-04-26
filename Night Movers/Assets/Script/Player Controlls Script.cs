@@ -45,8 +45,10 @@ public class PlayerController3D : NetworkBehaviour
     public Transform HoldPosition;
     public Transform MidlePoint;
     [SerializeField]
-    private GameObject heldObject;
+    public GameObject heldObject;
     private ObjectweightManager currentHeavyObject;
+    public Transform MedianPoint;
+
 
     // Attack
     [SerializeField] private bool isChargingWeapon;
@@ -103,6 +105,7 @@ public class PlayerController3D : NetworkBehaviour
 
     [Header("Carry Object Settings")]
     [SerializeField] private ObjectweightManager ObjectScript;
+
 
     void Awake()
     {
@@ -254,6 +257,10 @@ public class PlayerController3D : NetworkBehaviour
                     {
                         currentHeavyObject = objScript;
                         objScript.AddHoldPositionServerRpc(NetworkObject.NetworkObjectId);
+                        if(objScript.playerHoldingPosition.Count > 0)
+                        {
+                            heldObject = objScript.gameObject;
+                        }
                     }
                 }
             }
