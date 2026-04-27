@@ -1310,6 +1310,7 @@ GameObject:
   - component: {fileID: 870527792}
   - component: {fileID: 870527790}
   - component: {fileID: 870527791}
+  - component: {fileID: 870527797}
   m_Layer: 3
   m_Name: Light Object
   m_TagString: Untagged
@@ -1473,12 +1474,30 @@ Transform:
   m_GameObject: {fileID: 870527789}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.94, y: -21.3, z: -30.800003}
+  m_LocalPosition: {x: 6.94, y: -22.85, z: -30.800003}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &870527797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870527789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b414351342c51db459d65b6a0b2c322d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ValuableObject
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxValue: 80
+  maxDurability: 100
+  minImpactVelocity: 2
+  damageMultiplier: 10
+  breakEffect: {fileID: 0}
 --- !u!43 &1044792678
 Mesh:
   m_ObjectHideFlags: 0
