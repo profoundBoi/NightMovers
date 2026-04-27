@@ -59299,7 +59299,7 @@ GameObject:
   - component: {fileID: 7904406819892974699}
   - component: {fileID: 7904406819892974698}
   m_Layer: 3
-  m_Name: Cube.072
+  m_Name: Mirror
   m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
