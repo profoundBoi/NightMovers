@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CarrySpot
   - WayPoint2
+  - Pickup
   layers:
   - Default
   - TransparentFX

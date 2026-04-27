@@ -68,7 +68,7 @@ public class ValuableObject : NetworkBehaviour
 
         if (durability.Value <= 0)
         {
-            Break();
+           // Break();
         }
     }
 
