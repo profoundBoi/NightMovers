@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6776283628575977526}
-  - component: {fileID: 4167874170229303482}
   m_Layer: 0
   m_Name: Waypoint 2
   m_TagString: Untagged
@@ -25,59 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 158158909165619498}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 6.366462e-12, w: 1}
-  m_LocalPosition: {x: 0.009999992, y: -0.0499996, z: 4.1399994}
+  m_LocalRotation: {x: 0.08428662, y: -6.132659e-13, z: 7.250067e-12, w: 0.9964416}
+  m_LocalPosition: {x: 0.009999993, y: -0.7446989, z: 4.0727773}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 573673695502568959}
+  m_Father: {fileID: 7939605792612254305}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4167874170229303482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 158158909165619498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da52bf8bbc1de48cfb221a6ff30f7972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Multiplayer.Center.NetcodeForGameObjectsExample::Unity.Multiplayer.Center.NetcodeForGameObjectsExample.ClientNetworkTransform
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
-  AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 0
-  RotationInterpolationType: 0
-  ScaleInterpolationType: 0
-  PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.1
-  RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.1
-  ScaleLerpSmoothing: 1
-  ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
-  TickSyncChildren: 0
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
-  SlerpPosition: 0
 --- !u!1 &2626495903163686285
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,7 +236,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8940824644306807942}
+  - {fileID: 6776283628575977526}
+  - {fileID: 2831433356486252073}
   m_Father: {fileID: 573673695502568959}
   m_LocalEulerAnglesHint: {x: -9.67, y: 0, z: 0}
 --- !u!20 &1936071924641103202
@@ -400,7 +356,6 @@ GameObject:
   - component: {fileID: 8940824644306807942}
   - component: {fileID: 5692641048830359190}
   - component: {fileID: 3033580132558388443}
-  - component: {fileID: 7285613218637043924}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -416,12 +371,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5376277734232456821}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 6.366462e-12, w: 1}
-  m_LocalPosition: {x: 0, y: -0.8899996, z: 2.13}
+  m_LocalRotation: {x: 0.08428662, y: -6.132659e-13, z: 7.250067e-12, w: 0.9964416}
+  m_LocalPosition: {x: 0, y: -1.2351375, z: 1.9502398}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 573673695502568959}
+  m_Father: {fileID: 7939605792612254305}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &5692641048830359190
 MonoBehaviour:
@@ -563,52 +518,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &7285613218637043924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5376277734232456821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da52bf8bbc1de48cfb221a6ff30f7972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Multiplayer.Center.NetcodeForGameObjectsExample::Unity.Multiplayer.Center.NetcodeForGameObjectsExample.ClientNetworkTransform
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
-  AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 0
-  RotationInterpolationType: 0
-  ScaleInterpolationType: 0
-  PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.1
-  RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.1
-  ScaleLerpSmoothing: 1
-  ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
-  TickSyncChildren: 0
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
-  SlerpPosition: 0
 --- !u!1 &6662843417336390052
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,9 +604,6 @@ Transform:
   - {fileID: 7939605792612254305}
   - {fileID: 2147320185506291298}
   - {fileID: 6242682640192966561}
-  - {fileID: 8940824644306807942}
-  - {fileID: 6776283628575977526}
-  - {fileID: 2831433356486252073}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.518, y: 0.157, z: -0.03}
 --- !u!114 &7020281404472582819
@@ -1031,7 +937,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2831433356486252073}
-  - component: {fileID: 89221305959908421}
   m_Layer: 0
   m_Name: Follow Point
   m_TagString: Untagged
@@ -1047,59 +952,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8650505996627970130}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 6.366462e-12, w: 1}
-  m_LocalPosition: {x: 0.010000013, y: -1.5599998, z: 6.4499993}
+  m_LocalRotation: {x: 0.08428662, y: -6.132659e-13, z: 7.250067e-12, w: 0.9964416}
+  m_LocalPosition: {x: 0.010000017, y: -2.6212628, z: 6.0963154}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 573673695502568959}
+  m_Father: {fileID: 7939605792612254305}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &89221305959908421
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8650505996627970130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da52bf8bbc1de48cfb221a6ff30f7972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Multiplayer.Center.NetcodeForGameObjectsExample::Unity.Multiplayer.Center.NetcodeForGameObjectsExample.ClientNetworkTransform
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
-  AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 0
-  RotationInterpolationType: 0
-  ScaleInterpolationType: 0
-  PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.1
-  RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.1
-  ScaleLerpSmoothing: 1
-  ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
-  TickSyncChildren: 0
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
-  SlerpPosition: 0
 --- !u!1001 &135274368199329472
 PrefabInstance:
   m_ObjectHideFlags: 0
