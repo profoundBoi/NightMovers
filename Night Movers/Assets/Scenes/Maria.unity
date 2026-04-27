@@ -60875,7 +60875,7 @@ GameObject:
   - component: {fileID: 8942034690226739472}
   - component: {fileID: 8942034690226739477}
   m_Layer: 3
-  m_Name: Side Table
+  m_Name: SideTable
   m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
