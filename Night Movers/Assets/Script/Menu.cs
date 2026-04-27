@@ -25,21 +25,11 @@ public class Menu : MonoBehaviour
     public void StartHost()
     {
         ushort port = GetPort();
-        transport.SetConnectionData("0.0.0.0", port);
+        transport.SetConnectionData("0.0.0.0",  port);
+
         networkManager.StartHost();
 
-        // Wait for at least one client before loading
-        networkManager.OnClientConnectedCallback += OnClientConnected;
-    }
-
-    private void OnClientConnected(ulong clientId)
-    {
-        // Only load once, when a non-host client connects
-        if (clientId != networkManager.LocalClientId)
-        {
-            networkManager.OnClientConnectedCallback -= OnClientConnected;
-            networkManager.SceneManager.LoadScene("Game01", LoadSceneMode.Single);
-        }
+        networkManager.SceneManager.LoadScene("Game01", LoadSceneMode.Single);
     }
 
     public void JoinGame()
