@@ -23,7 +23,6 @@ public class BezierPathLine : NetworkBehaviour
     private LineRenderer lr;
     private Transform heldObjectTransform;
     private Vector3[] linePositions;
-    private bool wasDrawing = false;
 
     void Awake()
     {
@@ -37,24 +36,21 @@ public class BezierPathLine : NetworkBehaviour
 
     void Update()
     {
-        // Run on ALL clients, not just owner
-        // The held object position is already synced via ClientNetworkTransform
-        UpdateHeldObjectReference();
-        bool shouldDraw = ShouldDrawLine();
+        // Only the owner calculates and broadcasts the line
+        if (!IsOwner) return;
 
-        if (shouldDraw)
+        UpdateHeldObjectReference();
+
+        if (ShouldDrawLine())
         {
             CalculateLine();
-            lr.enabled = true;
-            lr.positionCount = linePositions.Length;
-            lr.SetPositions(linePositions);
+            // Send positions to all clients
+            UpdateLineClientRpc(linePositions, true);
         }
-        else if (wasDrawing && !shouldDraw)
+        else
         {
-            lr.enabled = false;
+            UpdateLineClientRpc(linePositions, false);
         }
-
-        wasDrawing = shouldDraw;
     }
 
     void CalculateLine()
@@ -67,6 +63,17 @@ public class BezierPathLine : NetworkBehaviour
         {
             float t = i / (float)resolution;
             linePositions[i] = Bezier(t, p0, p1, p2);
+        }
+    }
+
+    [ClientRpc]
+    void UpdateLineClientRpc(Vector3[] positions, bool visible)
+    {
+        lr.enabled = visible;
+        if (visible)
+        {
+            lr.positionCount = positions.Length;
+            lr.SetPositions(positions);
         }
     }
 
