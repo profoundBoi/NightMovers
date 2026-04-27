@@ -4,7 +4,10 @@ using Unity.Netcode;
 public class IntroManager : NetworkBehaviour
 {
     public GameObject[] panels;
-    private int currentPanel = 0;
+    public AudioSource audioSource;
+    public AudioClip[] audioClips;
+
+    private int currentIndex = 0;
 
     private void Start()
     {
@@ -17,13 +20,22 @@ public class IntroManager : NetworkBehaviour
 
     void ShowPanel(int index)
     {
+        // Safety check
+        if (index < 0 || index >= panels.Length) return;
+
         for (int i = 0; i < panels.Length; i++)
         {
             panels[i].SetActive(i == index);
         }
+
+        // Play matching audio
+        if (index < audioClips.Length && audioSource != null)
+        {
+            audioSource.clip = audioClips[index];
+            audioSource.Play();
+        }
     }
 
-    // Called by button
     public void OnNextPressed()
     {
         SubmitNextServerRpc();
@@ -32,15 +44,15 @@ public class IntroManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void SubmitNextServerRpc()
     {
-        currentPanel++;
+        currentIndex++;
 
-        if (currentPanel >= panels.Length)
+        if (currentIndex >= panels.Length)
         {
             StartGameClientRpc();
         }
         else
         {
-            UpdatePanelClientRpc(currentPanel);
+            UpdatePanelClientRpc(currentIndex);
         }
     }
 
@@ -58,6 +70,11 @@ public class IntroManager : NetworkBehaviour
         foreach (var panel in panels)
         {
             panel.SetActive(false);
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.Stop();
         }
     }
 }
