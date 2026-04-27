@@ -18,36 +18,62 @@ public class BezierPathLine : NetworkBehaviour
     public int resolution = 30;
 
     [Header("References")]
-    public PlayerController3D playerController; // Drag your player controller here
+    public PlayerController3D playerController;
 
     private LineRenderer lr;
     private Transform heldObjectTransform;
+    private Vector3[] linePositions;
 
     void Awake()
     {
         lr = GetComponent<LineRenderer>();
         lr.positionCount = resolution + 1;
+        linePositions = new Vector3[resolution + 1];
 
-        // Auto-find player controller if not assigned
         if (playerController == null)
             playerController = GetComponentInParent<PlayerController3D>();
     }
 
     void Update()
     {
-        // Update held object reference every frame
+        // Only the owner calculates and broadcasts the line
+        if (!IsOwner) return;
+
         UpdateHeldObjectReference();
 
-        // If we have all required points and a held object, draw the line
         if (ShouldDrawLine())
         {
-            DrawBezierLine();
+            CalculateLine();
+            // Send positions to all clients
+            UpdateLineClientRpc(linePositions, true);
         }
         else
         {
-            // Hide line when not needed
-            if (lr.enabled)
-                lr.enabled = false;
+            UpdateLineClientRpc(linePositions, false);
+        }
+    }
+
+    void CalculateLine()
+    {
+        Vector3 p0 = point1.position + Vector3.up * heightOffset + Vector3.forward * frontOffset;
+        Vector3 p1 = point2.position + Vector3.up * heightOffset + Vector3.forward * frontOffset;
+        Vector3 p2 = point3.position;
+
+        for (int i = 0; i <= resolution; i++)
+        {
+            float t = i / (float)resolution;
+            linePositions[i] = Bezier(t, p0, p1, p2);
+        }
+    }
+
+    [ClientRpc]
+    void UpdateLineClientRpc(Vector3[] positions, bool visible)
+    {
+        lr.enabled = visible;
+        if (visible)
+        {
+            lr.positionCount = positions.Length;
+            lr.SetPositions(positions);
         }
     }
 
@@ -56,8 +82,6 @@ public class BezierPathLine : NetworkBehaviour
         if (playerController != null && playerController.heldObject != null)
         {
             heldObjectTransform = playerController.heldObject.transform;
-
-            // If point3 isn't assigned and we have a medianPoint, use that
             if (point3 == null && medianPoint != null)
                 point3 = medianPoint;
         }
@@ -69,39 +93,15 @@ public class BezierPathLine : NetworkBehaviour
 
     bool ShouldDrawLine()
     {
-        // Need at least point1, point2, and something to aim at (point3 or medianPoint or held object)
-        if (point1 == null || point2 == null)
-            return false;
+        if (point1 == null || point2 == null) return false;
 
-        // Can draw if we have a held object or a valid point3/medianPoint
         if (heldObjectTransform != null)
         {
-            point3 = heldObjectTransform; // Dynamically set point3 to held object
+            point3 = heldObjectTransform;
             return true;
         }
 
         return point3 != null;
-    }
-
-    void DrawBezierLine()
-    {
-        if (!lr.enabled)
-            lr.enabled = true;
-
-        // Calculate points with offsets
-        Vector3 p0 = point1.position + Vector3.up * heightOffset + Vector3.forward * frontOffset;
-        Vector3 p1 = point2.position + Vector3.up * heightOffset + Vector3.forward * frontOffset;
-        Vector3 p2 = point3.position; // No offset for the target point (held object)
-
-        // Optional: Add offset to target if needed
-        // p2 += Vector3.up * heightOffset + Vector3.forward * frontOffset;
-
-        // Generate bezier curve points
-        for (int i = 0; i <= resolution; i++)
-        {
-            float t = i / (float)resolution;
-            lr.SetPosition(i, Bezier(t, p0, p1, p2));
-        }
     }
 
     Vector3 Bezier(float t, Vector3 p0, Vector3 p1, Vector3 p2)
@@ -111,7 +111,6 @@ public class BezierPathLine : NetworkBehaviour
                Mathf.Pow(t, 2) * p2;
     }
 
-    // Optional: Public method to manually set the target
     public void SetTarget(Transform target)
     {
         heldObjectTransform = target;
@@ -119,7 +118,6 @@ public class BezierPathLine : NetworkBehaviour
             point3 = target;
     }
 
-    // Visual feedback in editor
     void OnDrawGizmosSelected()
     {
         if (point1 != null && point2 != null && (point3 != null || heldObjectTransform != null))
