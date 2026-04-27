@@ -25,11 +25,11 @@ public class Menu : MonoBehaviour
     public void StartHost()
     {
         ushort port = GetPort();
-        transport.SetConnectionData("0.0.0.0",  port);
-
+        transport.SetConnectionData("0.0.0.0", port);
         networkManager.StartHost();
-
-        networkManager.SceneManager.LoadScene("Game01", LoadSceneMode.Single);
+        // SceneManager is only safe to use after StartHost succeeds
+        if (networkManager.IsHost)
+            networkManager.SceneManager.LoadScene("Game01", LoadSceneMode.Single);
     }
 
     public void JoinGame()
