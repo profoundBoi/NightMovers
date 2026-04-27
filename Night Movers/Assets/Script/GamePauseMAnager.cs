@@ -8,6 +8,7 @@ public class IntroManager : NetworkBehaviour
     public AudioClip[] audioClips;
 
     private int currentIndex = 0;
+    public GameObject Button;
 
     private void Start()
     {
@@ -70,6 +71,7 @@ public class IntroManager : NetworkBehaviour
         foreach (var panel in panels)
         {
             panel.SetActive(false);
+            Button.SetActive(false);
         }
 
         if (audioSource != null)
