@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParticleWaypoints
   ShowTopMostFoldoutHeaderGroup: 1
-  point1: {fileID: 6242682640192966561}
+  point1: {fileID: 7506021028382331414}
   point2: {fileID: 6776283628575977526}
   point3: {fileID: 6242682640192966561}
   medianPoint: {fileID: 0}
@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 5076155060083185627}
   m_Layer: 0
   m_Name: CarrySpot
-  m_TagString: CarrySpot
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -970,6 +970,10 @@ PrefabInstance:
     - target: {fileID: 7098228979011391084, guid: 78c762d4bd91b0545bd6f5346c217c99, type: 3}
       propertyPath: m_Name
       value: Magnet Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098228979011391084, guid: 78c762d4bd91b0545bd6f5346c217c99, type: 3}
+      propertyPath: m_TagString
+      value: CarrySpot
       objectReference: {fileID: 0}
     - target: {fileID: 7622950439636161750, guid: 78c762d4bd91b0545bd6f5346c217c99, type: 3}
       propertyPath: m_LocalPosition.x
