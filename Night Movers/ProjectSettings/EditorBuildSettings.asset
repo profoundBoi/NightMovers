@@ -11,16 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game01.unity
     guid: cc35dd406820cb4488f4c85057f7dbb3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Rea.unity
     guid: 645862380344a4f4d91a5c9d092695dd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/VuyoClassScene.unity
     guid: 48ef3e90c969daf45ba1e9a36fa4c1f3
-  - enabled: 1
+  - enabled: 0
     path: Assets/NGO_Minimal_Setup/NGO_Setup.unity
     guid: 0867180d7e0952f4cb5c64dc6baf85e0
   m_configObjects:
