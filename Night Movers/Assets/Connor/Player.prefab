@@ -420,8 +420,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   Interactrange: 500
-  HoldPosition: {fileID: 8878057739218168913}
-  MidlePoint: {fileID: 4210509366305039722}
+  HoldPosition: {fileID: 0}
+  MidlePoint: {fileID: 0}
   heldObject: {fileID: 0}
   MedianPoint: {fileID: 0}
   isChargingWeapon: 0
@@ -1686,11 +1686,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!4 &4210509366305039722 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2430609398961674115, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
-  m_PrefabInstance: {fileID: 2005783722078974697}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7373920136234835062 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9043391744114667167, guid: 4b53fb012c9042e4da63d1e3947dd1ba, type: 3}
