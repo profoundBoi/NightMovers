@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2246328073
+  GlobalObjectIdHash: 4097108455
   InScenePlacedSourceGlobalObjectIdHash: 1069424276
   DeferredDespawnTick: 0
   Ownership: 1
@@ -235,7 +235,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/DualSenseGamepadHID/leftStick,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4419224917147006858}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnLook
         m_Mode: 0
@@ -259,7 +259,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Interact[/Keyboard/e,/DualSenseGamepadHID/buttonNorth]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4419224917147006858}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnJump
         m_Mode: 0
@@ -478,7 +478,7 @@ Transform:
   m_GameObject: {fileID: 1138952236841866564}
   serializedVersion: 2
   m_LocalRotation: {x: 0.02316756, y: -0, z: -0, w: 0.9997316}
-  m_LocalPosition: {x: 0, y: 1.1599998, z: -0.35000038}
+  m_LocalPosition: {x: 0, y: 1.143, z: 0.013}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
