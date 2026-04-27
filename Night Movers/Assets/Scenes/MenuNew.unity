@@ -2091,6 +2091,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1763649626}
+  - component: {fileID: 1763649627}
   m_Layer: 0
   m_Name: Menu
   m_TagString: Untagged
@@ -2113,6 +2114,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1763649627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763649625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f3d74c37202dc74da210ac8fde8af68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NewMenu
+  hostButton: {fileID: 184370268}
+  joinButton: {fileID: 1425527332}
+  serverButton: {fileID: 1926418824}
 --- !u!1 &1817718819
 GameObject:
   m_ObjectHideFlags: 0
