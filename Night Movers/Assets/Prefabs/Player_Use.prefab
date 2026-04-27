@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6776283628575977526}
   m_Layer: 0
   m_Name: Waypoint 2
-  m_TagString: Untagged
+  m_TagString: WayPoint2
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24,8 +24,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 158158909165619498}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 6.366462e-12, w: 1}
-  m_LocalPosition: {x: 0.009999994, y: -0.04999961, z: 4.1399984}
+  m_LocalRotation: {x: 9.313226e-10, y: -0, z: -5.0931703e-11, w: 1}
+  m_LocalPosition: {x: 0.010000001, y: -0.049999602, z: 4.139996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParticleWaypoints
   ShowTopMostFoldoutHeaderGroup: 1
-  point1: {fileID: 6261498180150652506}
+  point1: {fileID: 6242682640192966561}
   point2: {fileID: 6776283628575977526}
   point3: {fileID: 6242682640192966561}
   medianPoint: {fileID: 0}
@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 5076155060083185627}
   m_Layer: 0
   m_Name: CarrySpot
-  m_TagString: Untagged
+  m_TagString: CarrySpot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -542,8 +542,8 @@ Transform:
   m_GameObject: {fileID: 6662843417336390052}
   serializedVersion: 2
   m_LocalRotation: {x: -0.004522972, y: -0.0013719628, z: 0.00026905147, w: 0.9999888}
-  m_LocalPosition: {x: 0.007, y: -1.553, z: 6.456}
-  m_LocalScale: {x: 1.0000001, y: 1, z: 1}
+  m_LocalPosition: {x: 0.0069999993, y: -1.553, z: 6.4559994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 573673695502568959}
@@ -601,8 +601,8 @@ Transform:
   - {fileID: 3154629534396540823}
   - {fileID: 7939605792612254305}
   - {fileID: 2147320185506291298}
-  - {fileID: 6242682640192966561}
   - {fileID: 8940824644306807942}
+  - {fileID: 6242682640192966561}
   - {fileID: 6776283628575977526}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.518, y: 0.157, z: -0.03}
@@ -618,7 +618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3226901904
+  GlobalObjectIdHash: 4039033324
   InScenePlacedSourceGlobalObjectIdHash: 3226901904
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1022,11 +1022,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78c762d4bd91b0545bd6f5346c217c99, type: 3}
---- !u!4 &6261498180150652506 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6270655798496389274, guid: 78c762d4bd91b0545bd6f5346c217c99, type: 3}
-  m_PrefabInstance: {fileID: 135274368199329472}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7506021028382331414 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7622950439636161750, guid: 78c762d4bd91b0545bd6f5346c217c99, type: 3}
