@@ -29,7 +29,7 @@ public class Menu : MonoBehaviour
 
         networkManager.StartHost();
 
-        networkManager.SceneManager.LoadScene("Game01", LoadSceneMode.Single);
+        networkManager.SceneManager.LoadScene("Maria", LoadSceneMode.Single);
     }
 
     public void JoinGame()
