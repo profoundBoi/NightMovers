@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 4670567710063064628}
   - component: {fileID: 7671075524685072170}
   - component: {fileID: 2851007252628806509}
-  - component: {fileID: 8224301605820426885}
   - component: {fileID: 3815305896473197295}
   - component: {fileID: 329148149987547700}
+  - component: {fileID: 4419224917147006858}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2554753574
+  GlobalObjectIdHash: 1474917894
   InScenePlacedSourceGlobalObjectIdHash: 1069424276
   DeferredDespawnTick: 0
   Ownership: 1
@@ -219,7 +219,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8224301605820426885}
+      - m_Target: {fileID: 4419224917147006858}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -235,7 +235,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/DualSenseGamepadHID/leftStick,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8224301605820426885}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnLook
         m_Mode: 0
@@ -258,12 +258,8 @@ MonoBehaviour:
     m_ActionId: 852140f2-7766-474d-8707-702459ba45f3
     m_ActionName: 'Player/Interact[/Keyboard/e,/DualSenseGamepadHID/buttonNorth]'
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 27c5f898-bc57-4ee1-8800-db469aca5fe3
-    m_ActionName: 'Player/Crouch[/DualSenseGamepadHID/buttonEast,/Keyboard/c]'
-  - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8224301605820426885}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerController3D, Assembly-CSharp
         m_MethodName: OnJump
         m_Mode: 0
@@ -277,18 +273,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: f1ba0d36-48eb-4cd5-b651-1c94a6531f70
     m_ActionName: 'Player/Jump[/Keyboard/space,/DualSenseGamepadHID/buttonSouth]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2776c80d-3c14-4091-8c56-d04ced07a2b0
-    m_ActionName: 'Player/Previous[/Keyboard/1,/DualSenseGamepadHID/dpad/left]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba
-    m_ActionName: 'Player/Next[/Keyboard/2,/DualSenseGamepadHID/dpad/right]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
-    m_ActionName: 'Player/Sprint[/Keyboard/leftShift,/DualSenseGamepadHID/leftStickPress]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
@@ -361,63 +345,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &8224301605820426885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22506907148036397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d1dfe3686ce60e4f95e7a64816d8bbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController3D
-  ShowTopMostFoldoutHeaderGroup: 1
-  moveInput: {x: 0, y: 0, z: 0}
-  speed: 5
-  jumpForce: 5
-  SpeedMultiplier: 0
-  lookSensitivity: 120
-  CameraHolder: {fileID: 0}
-  PlayerCamera: {fileID: 954514499320625942}
-  minLookX: -60
-  maxLookX: 60
-  playerCam: {fileID: 0}
-  maxDistance: 0
-  minDistance: 0
-  Interact:
-    serializedVersion: 2
-    m_Bits: 0
-  isChargingWeapon: 0
-  attackPower: 0
-  heldWeapon: {fileID: 0}
-  HoldingPosition: {fileID: 0}
-  AimDistance: 0
-  SniperScopeUi: {fileID: 0}
-  PausePanel: {fileID: 0}
-  PauseCanvas: {fileID: 0}
-  InventoryCanvas: {fileID: 0}
-  InventoryPanel: {fileID: 0}
-  eventSystem: {fileID: 0}
-  PauseFirstSelect: {fileID: 0}
-  InventoryFirstSelect: {fileID: 0}
-  playerAnimations: {fileID: 0}
-  AnimationBools: []
-  speedParam: Speed
-  OtherPlayer: {fileID: 0}
-  forceAmount: 20
-  forceDuration: 1
-  audioSource: {fileID: 0}
-  shootSound: {fileID: 0}
-  PlayerMiniMap: {fileID: 0}
-  OpenMapCamera: {fileID: 0}
-  OpenMap: {x: 0, y: 0, z: 0}
-  ClosedMap: {x: 0, y: 0, z: 0}
-  OpenMapPosition: {x: 0, y: 0, z: 0}
-  ClosedMapPosition: {x: 0, y: 0, z: 0}
-  OpenMapCameraPosition: {x: 0, y: 0, z: 0}
-  ClosedMapCameraPosition: {x: 0, y: 0, z: 0}
 --- !u!95 &3815305896473197295
 Animator:
   serializedVersion: 7
@@ -464,6 +391,65 @@ MonoBehaviour:
       Synchronize: 1
       ParameterType: 1
   AnimatorParametersExpanded: 0
+--- !u!114 &4419224917147006858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22506907148036397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5ef7bef3bab0be42950ce6d699cf54c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController3D
+  ShowTopMostFoldoutHeaderGroup: 1
+  moveInput: {x: 0, y: 0, z: 0}
+  speed: 5
+  jumpForce: 5
+  SpeedMultiplier: 0
+  lookSensitivity: 120
+  PlayerCamera: {fileID: 0}
+  minLookX: -60
+  maxLookX: 60
+  maxDistance: 0
+  minDistance: 0
+  Interact:
+    serializedVersion: 2
+    m_Bits: 0
+  Interactrange: 0
+  HoldPosition: {fileID: 0}
+  MidlePoint: {fileID: 0}
+  heldObject: {fileID: 0}
+  MedianPoint: {fileID: 0}
+  isChargingWeapon: 0
+  attackPower: 0
+  heldWeapon: {fileID: 0}
+  AimDistance: 0
+  SniperScopeUi: {fileID: 0}
+  PausePanel: {fileID: 0}
+  PauseCanvas: {fileID: 0}
+  InventoryCanvas: {fileID: 0}
+  InventoryPanel: {fileID: 0}
+  eventSystem: {fileID: 0}
+  PauseFirstSelect: {fileID: 0}
+  InventoryFirstSelect: {fileID: 0}
+  playerAnimations: {fileID: 0}
+  AnimationBools: []
+  OtherPlayer: {fileID: 0}
+  forceAmount: 20
+  forceDuration: 1
+  audioSource: {fileID: 0}
+  shootSound: {fileID: 0}
+  PlayerMiniMap: {fileID: 0}
+  OpenMapCamera: {fileID: 0}
+  OpenMap: {x: 0, y: 0, z: 0}
+  ClosedMap: {x: 0, y: 0, z: 0}
+  OpenMapPosition: {x: 0, y: 0, z: 0}
+  ClosedMapPosition: {x: 0, y: 0, z: 0}
+  OpenMapCameraPosition: {x: 0, y: 0, z: 0}
+  ClosedMapCameraPosition: {x: 0, y: 0, z: 0}
+  ObjectScript: {fileID: 0}
 --- !u!1 &1138952236841866564
 GameObject:
   m_ObjectHideFlags: 0
