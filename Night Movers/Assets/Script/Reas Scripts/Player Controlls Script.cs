@@ -49,7 +49,6 @@ public class PlayerController3D : NetworkBehaviour
     private ObjectweightManager currentHeavyObject;
     public Transform MedianPoint;
 
-
     // Attack
     [SerializeField] private bool isChargingWeapon;
     [SerializeField] private float attackPower;
@@ -251,13 +250,14 @@ public class PlayerController3D : NetworkBehaviour
                     if (objScript != null && objScript.canBePickedUp && netObj != null)
                     {
                         heldObject = target;
-                        PickUpObjectServerRpc(netObj.NetworkObjectId);
+                        // FIX: pass LocalClientId so server knows who is picking up
+                        PickUpObjectServerRpc(netObj.NetworkObjectId, NetworkManager.Singleton.LocalClientId);
                     }
                     else if (objScript != null && !objScript.canBePickedUp && netObj != null)
                     {
                         currentHeavyObject = objScript;
                         objScript.AddHoldPositionServerRpc(NetworkObject.NetworkObjectId);
-                        if(objScript.playerHoldingPosition.Count > 0)
+                        if (objScript.playerHoldingPosition.Count > 0)
                         {
                             heldObject = objScript.gameObject;
                         }
@@ -280,6 +280,7 @@ public class PlayerController3D : NetworkBehaviour
                 NetworkObject netObj = heldObject.GetComponent<NetworkObject>();
                 if (netObj != null)
                 {
+                    // FIX: RequireOwnership = false so joining clients can call this too
                     DropObjectServerRpc(netObj.NetworkObjectId);
                 }
                 heldObject = null;
@@ -289,24 +290,39 @@ public class PlayerController3D : NetworkBehaviour
 
     // ── SERVER RPCS ────────────────────────────────────────────────────────────
 
-    [ServerRpc]
-    private void PickUpObjectServerRpc(ulong networkObjectId)
+    // FIX: RequireOwnership = false allows joining (non-host) clients to call this RPC.
+    // We also accept callerClientId so we can transfer NetworkObject ownership to the
+    // picking-up client, which lets their NetworkTransform drive the object position
+    // authoritatively across the network.
+    [ServerRpc(RequireOwnership = false)]
+    private void PickUpObjectServerRpc(ulong networkObjectId, ulong callerClientId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
             return;
 
-        // Destroy Rigidbody on pickup — re-added fresh on drop
+        // Remove physics so the object stops falling/colliding while held
         Rigidbody objRb = netObj.GetComponent<Rigidbody>();
         if (objRb != null) Destroy(objRb);
 
-        SetHeldObjectClientRpc(networkObjectId);
+        // FIX: Transfer ownership to the picking-up client.
+        // This is required so the client's NetworkTransform can move the object
+        // and have that movement replicated to all other clients.
+        netObj.ChangeOwnership(callerClientId);
+
+        // Notify all clients who picked the object up
+        SetHeldObjectClientRpc(networkObjectId, callerClientId);
     }
 
-    [ServerRpc]
+    // FIX: RequireOwnership = false so joining clients can drop objects they hold.
+    [ServerRpc(RequireOwnership = false)]
     private void DropObjectServerRpc(ulong networkObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
             return;
+
+        // FIX: Return ownership to the server before re-adding physics,
+        // so the server drives the object after it is dropped.
+        netObj.RemoveOwnership();
 
         Rigidbody objRb = netObj.GetComponent<Rigidbody>();
         if (objRb == null) objRb = netObj.gameObject.AddComponent<Rigidbody>();
@@ -324,14 +340,22 @@ public class PlayerController3D : NetworkBehaviour
 
     // ── CLIENT RPCS ────────────────────────────────────────────────────────────
 
+    // FIX: Added ownerClientId parameter.
+    // Previously this checked !IsOwner and returned early, which blocked the
+    // joining player's client from ever setting heldObject.
+    // Now we match on LocalClientId instead — only the client who picked up the
+    // object sets heldObject on their machine.
     [ClientRpc]
-    private void SetHeldObjectClientRpc(ulong networkObjectId)
+    private void SetHeldObjectClientRpc(ulong networkObjectId, ulong ownerClientId)
     {
-        if (!IsOwner) return;
+        if (NetworkManager.Singleton.LocalClientId != ownerClientId) return;
+
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
             heldObject = netObj.gameObject;
     }
 
+    // FIX: Keep the IsOwner guard here — each player controller only clears
+    // its own heldObject reference, not every player's.
     [ClientRpc]
     private void ClearHeldObjectClientRpc()
     {
@@ -354,8 +378,10 @@ public class PlayerController3D : NetworkBehaviour
         {
             ObjectweightManager owm = heldObject.GetComponent<ObjectweightManager>();
 
-            // Only manually move if it's a normal object
-            // Heavy objects are parented to the median point and moved by ObjectweightManager
+            // Only manually move if it's a normal (lightweight) object.
+            // Heavy objects are handled by ObjectweightManager using the median point.
+            // NOTE: The held object must have a NetworkTransform set to Owner Authoritative
+            // mode so this local position change is replicated to all other clients.
             if (owm == null || owm.isNormalObject)
             {
                 heldObject.transform.position = HoldPosition.position;
@@ -386,8 +412,6 @@ public class PlayerController3D : NetworkBehaviour
 
         bool moving = moveInput.x != 0 || moveInput.z != 0;
         bool grounded = IsGrounded();
-
-
     }
 
     // ── INTERACTION / OUTLINE ──────────────────────────────────────────────────
@@ -430,10 +454,6 @@ public class PlayerController3D : NetworkBehaviour
             }
         }
     }
-
-
-
-
 
     bool IsGrounded()
     {
