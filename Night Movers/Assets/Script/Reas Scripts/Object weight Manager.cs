@@ -27,6 +27,7 @@ public class ObjectweightManager : NetworkBehaviour
 
                 if (medianPointObject == null)
                 {
+                    // Median point doesn't exist yet — create it and enable kinematic
                     medianPointObject = new GameObject("MedianHoldPoint");
                     medianPointObject.transform.position = medianPoint;
 
@@ -37,15 +38,19 @@ public class ObjectweightManager : NetworkBehaviour
                     if (thisNetObj != null)
                         thisNetObj.TrySetParent(medianPointObject.transform, worldPositionStays: true);
 
-                    SetKinematic(true); // 👈 disable physics when held
+                    // FIX: Object is now on the midpoint — disable physics so it
+                    // doesn't fall or collide while being carried by two players
+                    SetKinematicClientRpc(true);
                 }
                 else
                 {
+                    // Median point already exists — just update its position each frame
                     medianPointObject.transform.position = medianPoint;
                 }
             }
             else if (playerHoldingPosition.Count < 2 && medianPointObject != null)
             {
+                // Not enough players holding — tear down the median point
                 NetworkObject thisNetObj = GetComponent<NetworkObject>();
                 if (thisNetObj != null)
                     thisNetObj.TrySetParent((Transform)null, worldPositionStays: true);
@@ -55,12 +60,20 @@ public class ObjectweightManager : NetworkBehaviour
                     medianNetObj.Despawn(true);
 
                 medianPointObject = null;
-                SetKinematic(false); // 👈 re-enable physics when released
+
+                // FIX: Object is no longer on the midpoint — restore physics so it
+                // falls naturally after being released
+                SetKinematicClientRpc(false);
             }
         }
     }
 
-    private void SetKinematic(bool isKinematic)
+    // FIX: Changed SetKinematic to a ClientRpc so the kinematic/gravity state is
+    // applied on ALL clients, not just the server. Previously the Rigidbody on
+    // non-server clients was never updated, causing the object to fall through the
+    // world or float on client machines even while being carried.
+    [ClientRpc]
+    private void SetKinematicClientRpc(bool isKinematic)
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb == null) return;
@@ -109,7 +122,6 @@ public class ObjectweightManager : NetworkBehaviour
             CreateMedianHoldPoint();
     }
 
-
     public void CreateMedianHoldPoint()
     {
         if (!IsServer) return;
@@ -128,6 +140,9 @@ public class ObjectweightManager : NetworkBehaviour
         NetworkObject thisNetObj = GetComponent<NetworkObject>();
         if (thisNetObj != null)
             thisNetObj.TrySetParent(medianPointObject.transform, worldPositionStays: true);
+
+        // FIX: Kinematic ON when median hold point is created — object is now being carried
+        SetKinematicClientRpc(true);
     }
 
     public void DestroyMedianHoldPoint()
@@ -145,6 +160,9 @@ public class ObjectweightManager : NetworkBehaviour
                 medianNetObj.Despawn(true);
             medianPointObject = null;
         }
+
+        // FIX: Kinematic OFF when median hold point is destroyed — object is no longer carried
+        SetKinematicClientRpc(false);
     }
 
     [ClientRpc]
@@ -152,6 +170,4 @@ public class ObjectweightManager : NetworkBehaviour
     {
         playerHoldingPosition.Clear();
     }
-
-
 }
