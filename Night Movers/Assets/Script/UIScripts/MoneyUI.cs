@@ -1,18 +1,18 @@
-using UnityEngine;
 using TMPro;
-using Unity.Netcode;
+using UnityEngine;
 
-
-public class MoneyUI : NetworkBehaviour
+public class MoneyUI : MonoBehaviour
 {
     public TextMeshProUGUI moneyText;
+    private bool subscribed = false;
 
-    void Start()
+    void Update()
     {
-        if (MoneyManager.Instance != null)
+        if (!subscribed && MoneyManager.Instance != null)
         {
             MoneyManager.Instance.totalMoney.OnValueChanged += UpdateUI;
             UpdateUI(0, MoneyManager.Instance.totalMoney.Value);
+            subscribed = true;
         }
     }
 

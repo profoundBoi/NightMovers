@@ -257,10 +257,7 @@ public class PlayerController3D : NetworkBehaviour
                     {
                         currentHeavyObject = objScript;
                         objScript.AddHoldPositionServerRpc(NetworkObject.NetworkObjectId);
-                        if(objScript.playerHoldingPosition.Count > 0)
-                        {
-                            heldObject = objScript.gameObject;
-                        }
+                        
                     }
                 }
             }
