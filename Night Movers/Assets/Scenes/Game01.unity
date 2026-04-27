@@ -1024,6 +1024,7 @@ GameObject:
   - component: {fileID: 510507449}
   - component: {fileID: 510507454}
   - component: {fileID: 510507448}
+  - component: {fileID: 510507455}
   m_Layer: 3
   m_Name: Heavy Object
   m_TagString: Untagged
@@ -1193,6 +1194,24 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &510507455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510507447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b414351342c51db459d65b6a0b2c322d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ValuableObject
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxValue: 200
+  maxDurability: 90
+  minImpactVelocity: 2
+  damageMultiplier: 10
+  breakEffect: {fileID: 0}
 --- !u!1 &811051786
 GameObject:
   m_ObjectHideFlags: 0
