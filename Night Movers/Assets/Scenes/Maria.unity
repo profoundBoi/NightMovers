@@ -64795,7 +64795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectweightManager
   ShowTopMostFoldoutHeaderGroup: 1
-  isHeavyObject: 1
+  isHeavyObject: 0
   isNormalObject: 1
   canBePickedUp: 0
   playerHoldingPosition: []

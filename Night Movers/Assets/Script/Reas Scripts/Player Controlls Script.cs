@@ -36,7 +36,6 @@ public class PlayerController3D : NetworkBehaviour
     [SerializeField]
     private float maxDistance, minDistance;
 
-    // Interactions
     private GameObject InteractableObject;
     public LayerMask Interact;
     [SerializeField]
@@ -49,40 +48,33 @@ public class PlayerController3D : NetworkBehaviour
     private ObjectweightManager currentHeavyObject;
     public Transform MedianPoint;
 
-    // Attack
     [SerializeField] private bool isChargingWeapon;
     [SerializeField] private float attackPower;
     [SerializeField] private GameObject heldWeapon;
     [SerializeField] private int AimDistance;
     private bool isShooting;
 
-    // Sniper UI
     public GameObject SniperScopeUi;
 
-    // UI controls
     [Header("UI controls")]
     [SerializeField] private GameObject PausePanel;
     [SerializeField] private Canvas PauseCanvas, InventoryCanvas;
     [SerializeField] private GameObject InventoryPanel;
 
-    // Player Input Manager
     private PlayerInputManager playerInputManager;
     private GameObject playerInputmNagerHolder;
     [SerializeField] private MultiplayerEventSystem eventSystem;
     [SerializeField] private GameObject PauseFirstSelect, InventoryFirstSelect;
 
-    // Player Animations
     [Header("Animations")]
     [SerializeField] private Animator playerAnimations;
     private bool isJumping;
     [SerializeField] private List<string> AnimationBools;
 
-    // Enemy Stats
     [Header("Enemy Stats")]
     public GameObject OtherPlayer;
     private PlayerController3D otherPlayersScript;
 
-    // Slide Stats
     [Header("Slide Stats")]
     public float forceAmount = 20f;
     public float forceDuration = 1f;
@@ -110,6 +102,7 @@ public class PlayerController3D : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
+        rb.freezeRotation = true;
     }
 
     public override void OnNetworkSpawn()
@@ -126,9 +119,6 @@ public class PlayerController3D : NetworkBehaviour
         playerinput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
 
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-
         baseSpeed = speed;
         RunSpeed = speed * SpeedMultiplier;
 
@@ -141,8 +131,6 @@ public class PlayerController3D : NetworkBehaviour
         PlayerInput pi = GetComponent<PlayerInput>();
         if (pi != null) pi.enabled = false;
     }
-
-    // ── INPUT CALLBACKS ────────────────────────────────────────────────────────
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -250,7 +238,6 @@ public class PlayerController3D : NetworkBehaviour
                     if (objScript != null && objScript.canBePickedUp && netObj != null)
                     {
                         heldObject = target;
-                        // FIX: pass LocalClientId so server knows who is picking up
                         PickUpObjectServerRpc(netObj.NetworkObjectId, NetworkManager.Singleton.LocalClientId);
                     }
                     else if (objScript != null && !objScript.canBePickedUp && netObj != null)
@@ -267,20 +254,17 @@ public class PlayerController3D : NetworkBehaviour
         }
         else if (context.canceled)
         {
-            // Clear heavy object hold positions on release
             if (currentHeavyObject != null)
             {
                 currentHeavyObject.ClearHoldPositionsServerRpc();
                 currentHeavyObject = null;
             }
 
-            // Drop held object if carrying one
             if (heldObject != null)
             {
                 NetworkObject netObj = heldObject.GetComponent<NetworkObject>();
                 if (netObj != null)
                 {
-                    // FIX: RequireOwnership = false so joining clients can call this too
                     DropObjectServerRpc(netObj.NetworkObjectId);
                 }
                 heldObject = null;
@@ -288,40 +272,25 @@ public class PlayerController3D : NetworkBehaviour
         }
     }
 
-    // ── SERVER RPCS ────────────────────────────────────────────────────────────
-
-    // FIX: RequireOwnership = false allows joining (non-host) clients to call this RPC.
-    // We also accept callerClientId so we can transfer NetworkObject ownership to the
-    // picking-up client, which lets their NetworkTransform drive the object position
-    // authoritatively across the network.
     [ServerRpc(RequireOwnership = false)]
     private void PickUpObjectServerRpc(ulong networkObjectId, ulong callerClientId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
             return;
 
-        // Remove physics so the object stops falling/colliding while held
         Rigidbody objRb = netObj.GetComponent<Rigidbody>();
         if (objRb != null) Destroy(objRb);
 
-        // FIX: Transfer ownership to the picking-up client.
-        // This is required so the client's NetworkTransform can move the object
-        // and have that movement replicated to all other clients.
         netObj.ChangeOwnership(callerClientId);
-
-        // Notify all clients who picked the object up
         SetHeldObjectClientRpc(networkObjectId, callerClientId);
     }
 
-    // FIX: RequireOwnership = false so joining clients can drop objects they hold.
     [ServerRpc(RequireOwnership = false)]
     private void DropObjectServerRpc(ulong networkObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
             return;
 
-        // FIX: Return ownership to the server before re-adding physics,
-        // so the server drives the object after it is dropped.
         netObj.RemoveOwnership();
 
         Rigidbody objRb = netObj.GetComponent<Rigidbody>();
@@ -338,13 +307,6 @@ public class PlayerController3D : NetworkBehaviour
         ClearHeldObjectClientRpc();
     }
 
-    // ── CLIENT RPCS ────────────────────────────────────────────────────────────
-
-    // FIX: Added ownerClientId parameter.
-    // Previously this checked !IsOwner and returned early, which blocked the
-    // joining player's client from ever setting heldObject.
-    // Now we match on LocalClientId instead — only the client who picked up the
-    // object sets heldObject on their machine.
     [ClientRpc]
     private void SetHeldObjectClientRpc(ulong networkObjectId, ulong ownerClientId)
     {
@@ -354,16 +316,12 @@ public class PlayerController3D : NetworkBehaviour
             heldObject = netObj.gameObject;
     }
 
-    // FIX: Keep the IsOwner guard here — each player controller only clears
-    // its own heldObject reference, not every player's.
     [ClientRpc]
     private void ClearHeldObjectClientRpc()
     {
         if (!IsOwner) return;
         heldObject = null;
     }
-
-    // ── PHYSICS UPDATE ─────────────────────────────────────────────────────────
 
     void FixedUpdate()
     {
@@ -378,10 +336,6 @@ public class PlayerController3D : NetworkBehaviour
         {
             ObjectweightManager owm = heldObject.GetComponent<ObjectweightManager>();
 
-            // Only manually move if it's a normal (lightweight) object.
-            // Heavy objects are handled by ObjectweightManager using the median point.
-            // NOTE: The held object must have a NetworkTransform set to Owner Authoritative
-            // mode so this local position change is replicated to all other clients.
             if (owm == null || owm.isNormalObject)
             {
                 heldObject.transform.position = HoldPosition.position;
@@ -391,8 +345,6 @@ public class PlayerController3D : NetworkBehaviour
 
         checkForInteraction();
     }
-
-    // ── CAMERA & ANIMATIONS ────────────────────────────────────────────────────
 
     void LateUpdate()
     {
@@ -413,8 +365,6 @@ public class PlayerController3D : NetworkBehaviour
         bool moving = moveInput.x != 0 || moveInput.z != 0;
         bool grounded = IsGrounded();
     }
-
-    // ── INTERACTION / OUTLINE ──────────────────────────────────────────────────
 
     private void checkForInteraction()
     {
